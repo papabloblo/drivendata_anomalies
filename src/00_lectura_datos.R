@@ -3,12 +3,19 @@ library(dplyr)
 
 
 holidays <- read_csv("data/raw/holidays.csv",
+                     
+                     col_names = c("row_id",
+                                   "date",
+                                   "holiday",
+                                   "site_id"),
+                     
                      col_types = cols(
                        row_id = col_integer(),
-                       Date = col_date(format = ""),
-                       Holiday = col_character(),
+                       date = col_date(format = ""),
+                       holiday = col_character(),
                        site_id = col_character()
-                       )
+                       ),
+                     skip = 1
                      )
 
 metadata <- read_csv("data/raw/metadata.csv",
@@ -30,19 +37,22 @@ submission_format <- read_csv("data/raw/submission_format.csv",
                                 is_abnormal = col_character()
                                 )
                               )
+names(submission_format) <- tolower(names(submission_format))
 
 training_data <- read_csv("data/raw/training_data.csv",
                           col_types = cols(
-                            row_id = col_integer(),
+                            X1 = col_integer(),
                             meter_id = col_character(),
                             Timestamp = col_datetime(format = ""),
                             Values = col_double()
                             )
                           )
+names(training_data)[1] <- "obs_id"
+names(training_data) <- tolower(names(training_data))
 
 weather <- read_csv("data/raw/weather.csv",
                     col_types = cols(
-                      row_id = col_integer(),
+                      X1 = col_integer(),
                       Timestamp = col_datetime(format = ""),
                       Temperature = col_double(),
                       Distance = col_double(),
@@ -50,11 +60,14 @@ weather <- read_csv("data/raw/weather.csv",
                       )
                     )
 
+names(weather)[1] <- "row_id"
+names(weather) <- tolower(names(weather))
+
 save(list = c("holidays",
               "metadata",
               "submission_format",
               "training_data",
               "weather"),
-     file = "data/data_sets.RData")
+     file = "data/data_sets_raw.RData")
 
 
